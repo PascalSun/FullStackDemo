@@ -1,0 +1,1 @@
+watchmedo auto-restart --recursive --pattern="*.py" --directory="/code" --ignore-pattern="[.tox/*, *.git]" python3 manage.py start_worker

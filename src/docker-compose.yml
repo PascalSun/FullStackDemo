@@ -1,0 +1,146 @@
+version: "3"
+
+services:
+  db:
+    image: postgis/postgis
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=fullstackdemo
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=fullstackdemopw
+    ports:
+      - "5432:5432"
+    networks:
+      fullstackdemo:
+        aliases:
+          - fullstackdemo-db.local
+    container_name: db
+
+  graph_db:
+    image: neo4j:4.1.7
+    volumes:
+      - graph_data:/data
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      # user is neo4j
+      - NEO4J_AUTH=neo4j/fullstackdemopw
+    container_name: graph_db
+    networks:
+      fullstackdemo:
+        aliases:
+          - graph-db.local
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./dev/backend/Dockerfile
+    command: ["/wait-for-it/wait-for-it.sh", "fullstackdemo-db.local:5432", "--", "sh", "/home/dev/backend/backend.sh"]
+    restart: always
+    volumes:
+      - ./backend:/code
+      - .aws/:/root/.aws/
+    environment:
+      - POSTGRES_DB=fullstackdemo
+      - POSTGRES_ENDPOINT=fullstackdemo-db.local
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=fullstackdemopw
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    networks:
+      fullstackdemo:
+        aliases:
+          - fullstackdemo-backend.local
+    container_name: backend
+
+  worker:
+    build:
+      context: .
+      dockerfile: ./dev/backend/Dockerfile
+    command: ["/wait-for-it/wait-for-it.sh", "fullstackdemo-backend.local:8000", "--", "sh", "/home/dev/worker/worker.sh"]
+    restart: always
+    volumes:
+        - ./backend:/code
+        - .aws/:/root/.aws/
+    environment:
+      - POSTGRES_DB=fullstackdemo
+      - POSTGRES_ENDPOINT=fullstackdemo-db.local
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=fullstackdemopw
+    depends_on:
+      - db
+      - backend
+    networks:
+      fullstackdemo:
+        aliases:
+          - fullstackdemo-worker.local
+    container_name: worker
+
+  frontend:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./dev/frontend/Dockerfile
+    command: ["/wait-for-it/wait-for-it.sh", "fullstackdemo-backend.local:8000", "--", "sh", "/sh/frontend.sh"]
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - graphql_api
+    networks:
+      fullstackdemo:
+        aliases:
+          - fullstackdemo-frontend.local
+    container_name: frontend
+
+  graphql_api:
+    image: hasura/graphql-engine:v1.3.2.cli-migrations
+    restart: always
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://admin:fullstackdemopw@fullstackdemo-db.local:5432/fullstackdemo
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
+      HASURA_GRAPHQL_ADMIN_SECRET: fullstackdemopw
+      HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "public"
+    volumes:
+      - ./hasura/metadata:/hasura-migrations
+    depends_on:
+      - db
+      - backend
+    ports:
+      - "8080:8080"
+    networks:
+      fullstackdemo:
+        aliases:
+          - fullstackdemo-graphql-api.local
+    container_name: graphql_api
+
+  nginx:
+    restart: always
+    image: nginx
+    command: ["bash", "-c", "sleep 15 && nginx -g 'daemon off;'"]
+    ports:
+      - "80:80"
+    volumes:
+      - ./dev/nginx/:/etc/nginx/conf.d/
+    depends_on:
+      - backend
+      - graphql_api
+      - db
+    networks:
+      fullstackdemo:
+        aliases:
+          - fullstackdemo.local
+    container_name: nginx
+
+volumes:
+  pg_data:
+  graph_data:
+
+networks:
+  fullstackdemo:
