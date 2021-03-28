@@ -4,7 +4,7 @@ services:
   db:
     image: postgis/postgis
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - fullstack_demo_pg_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=fullstackdemo
       - POSTGRES_USER=admin
@@ -20,7 +20,7 @@ services:
   graph_db:
     image: neo4j:4.1.7
     volumes:
-      - graph_data:/data
+      - fullstack_demo_graph_data:/data
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -139,8 +139,8 @@ services:
     container_name: nginx
 
 volumes:
-  pg_data:
-  graph_data:
+  fullstack_demo_pg_data:
+  fullstack_demo_graph_data:
 
 networks:
   fullstackdemo:

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "worker",
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -73,13 +76,20 @@ WSGI_APPLICATION = 'fullstackdemo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+POSTGRES_ENDPOINT = os.environ.get('POSTGRES_ENDPOINT', None) or 'localhost'
+POSTGRES_DB = os.environ.get('POSTGRES_DB', None)
+POSTGRES_USER = os.environ.get('POSTGRES_USER', None)
+POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD', None)
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': POSTGRES_DB,
+        'USER': POSTGRES_USER,
+        'PASSWORD': POSTGRES_PASSWORD,
+        'HOST': POSTGRES_ENDPOINT,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
