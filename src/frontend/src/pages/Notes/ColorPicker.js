@@ -1,15 +1,12 @@
 import React from "react"
 import {
-  amber,
   lime,
   orange,
   red,
-  blue,
   purple,
   lightBlue,
   green,
   brown,
-  yellow,
 } from "@material-ui/core/colors"
 import { Menu, MenuItem, Typography } from "@material-ui/core"
 
