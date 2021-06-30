@@ -5,17 +5,18 @@ import {
   Select,
   MenuItem,
   Input,
+  IconButton,
   Button,
   CircularProgress,
   Grid,
-  IconButton,
   Paper,
   TextField,
 } from "@material-ui/core"
-import { useMutation, gql, useQuery, useSubscription } from "@apollo/client"
+import { useMutation, gql, useSubscription } from "@apollo/client"
 import { makeStyles } from "@material-ui/core/styles"
 import NoteCard from "./NoteCard"
-import { Add as AddIcon } from "@material-ui/icons"
+import ColorPicker from "./ColorPicker"
+import { Add as AddIcon, ColorLens } from "@material-ui/icons"
 
 const GET_NOTES = gql`
   subscription getNotes {
@@ -54,14 +55,22 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     margin: "10px",
   },
-  addNotes: {
+  inputForm: {
     width: "100%",
+    marginLeft: "auto",
+    paddingTop: "5px",
+    display: "block",
+    marginRight: "auto",
+  },
+  iconButton: {
     display: "flex",
-    justifyContent: "center",
-    flexDirection: "column",
+    backgroundColor: theme.palette.primary.main,
+  },
+  icon: {
+    margin: "auto",
   },
   showNotes: {
-    width: "100%",
+    margin: "10px",
   },
 }))
 
@@ -72,52 +81,70 @@ const Notes = () => {
   const [addNote] = useMutation(ADD_NOTES)
   const [note, setNote] = useState("")
   const [color, setColor] = useState("white")
-  if (loading) return "Loading"
+  const [colorPickerOpen, setColorPickerOpen] = useState(false)
+  if (loading) return <CircularProgress />
   if (error) return "Error"
   return (
     <div className={classes.root}>
-      <Grid container className={classes.addNotes}>
-        <Grid item xs={12}>
+      <Grid container>
+        <Grid item xs={3} className={classes.showNotes}>
           <Paper fullwidth style={{ backgroundColor: color }}>
-            <TextField
-              id="outlined-multiline-static"
-              label="Pick a color"
-              rows={4}
-              fullwidth
-              value={color}
-              variant="outlined"
-              onChange={(e) => setColor(e.target.value)}
-            />
-            <TextField
-              id="outlined-multiline-static"
-              label="Add Notes"
-              multiline
-              rows={4}
-              fullwidth
-              value={note}
-              variant="outlined"
-              onChange={(e) => setNote(e.target.value)}
-            />
-            <IconButton
-              onClick={() =>
-                addNote({
-                  variables: {
-                    content: note,
-                  },
-                })
-              }
-              disabled={!note}
-              aria-label="Edit"
-              fullwidth
-              color="inherit"
+            <FormControl>
+              <IconButton onClick={() => setColorPickerOpen(!colorPickerOpen)}>
+                <ColorLens />
+              </IconButton>
+
+              <ColorPicker open={colorPickerOpen} setColor={setColor}  setColorPickerOpen={setColorPickerOpen}/>
+            </FormControl>
+            {/* <FormControl fullWidth className={classes.inputForm}>
+              <TextField
+                id="outlined-multiline-static"
+                label="Pick a color"
+                rows={4}
+                fullWidth
+                value={color}
+                variant="outlined"
+                onChange={(e) => setColor(e.target.value)}
+              />
+            </FormControl> */}
+            <FormControl fullWidth className={classes.inputForm}>
+              <TextField
+                id="outlined-multiline-static"
+                label="Add Notes"
+                multiline
+                rows={4}
+                fullWidth
+                value={note}
+                variant="outlined"
+                onChange={(e) => setNote(e.target.value)}
+              />
+            </FormControl>
+            <FormControl
+              fullWidth
+              className={classes.inputForm}
+              style={{ display: "flex" }}
             >
-              <AddIcon />
-            </IconButton>
+              <Button
+                className={classes.iconButton}
+                onClick={() =>
+                  addNote({
+                    variables: {
+                      content: note,
+                      color: color,
+                    },
+                  })
+                }
+                disabled={!note}
+                aria-label="Edit"
+                variant="outlined"
+                fullWidth
+              >
+                <AddIcon className={classes.icon} />
+              </Button>
+            </FormControl>
           </Paper>
         </Grid>
-      </Grid>
-      <Grid container className={classes.showNotes}>
-        <Grid item xs={12}>
+        <Grid item xs={8} className={classes.showNotes}>
           {data?.notes_notes?.length
             ? data?.notes_notes.map((note) => (
                 <NoteCard note={note} key={note?.id} />
