@@ -1,10 +1,6 @@
 import React, { useState } from "react"
 import {
   FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Input,
   IconButton,
   Button,
   CircularProgress,
@@ -94,7 +90,11 @@ const Notes = () => {
                 <ColorLens />
               </IconButton>
 
-              <ColorPicker open={colorPickerOpen} setColor={setColor}  setColorPickerOpen={setColorPickerOpen}/>
+              <ColorPicker
+                open={colorPickerOpen}
+                setColor={setColor}
+                setColorPickerOpen={setColorPickerOpen}
+              />
             </FormControl>
             {/* <FormControl fullWidth className={classes.inputForm}>
               <TextField
