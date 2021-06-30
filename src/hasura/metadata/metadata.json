@@ -4,6 +4,12 @@
         {
             "table": {
                 "schema": "public",
+                "name": "notes_notes"
+            }
+        },
+        {
+            "table": {
+                "schema": "public",
                 "name": "raster_columns"
             }
         }

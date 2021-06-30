@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "worker",
     'import_export',
+    "notes"
 ]
 
 MIDDLEWARE = [

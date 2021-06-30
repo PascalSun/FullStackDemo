@@ -1,0 +1,15 @@
+export const osmQueries = {
+  Amenity: "node(area.a)['amenity'];",
+  Attraction: "node(area.a)['tourism'='attraction'];",
+  bbq: "node(area.a)['amenity'='bbq'];",
+  bench: "node(area.a)['amenity'='bench'];",
+  drinking_water: "node(area.a)['amenity'='drinking_water'];",
+  toilets: "node(area.a)['amenity'='toilets'];",
+  bus_stop: "node(area.a)['highway'='bus_stop'];",
+  fitness_station: "node(area.a)['amenity'='fitness_station'];",
+  waste_basket: "node(area.a)['amenity'='waste_basket'];",
+  memorial: "node(area.a)['historic'='memorial'];",
+  shelter: "node(area.a)['amenity'='shelter'];",
+  bicycle_repair_station: "node(area.a)['amenity'='bicycle_repair_station'];",
+  Bicycle_parking: "node(area.a)['amenity'='Bicycle_parking'];",
+}
