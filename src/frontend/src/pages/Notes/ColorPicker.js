@@ -15,6 +15,11 @@ import { Menu, MenuItem, Typography } from "@material-ui/core"
 
 const palettes = [
   {
+    name: "white",
+    color: "white",
+    displayName: "White",
+  },
+  {
     name: "red",
     color: red[900],
     displayName: "Red",
