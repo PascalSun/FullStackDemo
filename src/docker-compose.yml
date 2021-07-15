@@ -87,7 +87,7 @@ services:
       dockerfile: ./dev/frontend/Dockerfile
     command: ["/wait-for-it/wait-for-it.sh", "fullstackdemo-backend.local:8000", "--", "sh", "/sh/frontend.sh"]
     volumes:
-      - ./note_frontend:/app
+      - ./frontend:/app
     ports:
       - "3000:3000"
     depends_on:
@@ -99,7 +99,7 @@ services:
     container_name: frontend
 
   graphql_api:
-    image: hasura/graphql-engine:v1.3.2.cli-migrations
+    image: hasura/graphql-engine:v2.0.1.cli-migrations-v3
     restart: always
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://admin:fullstackdemopw@fullstackdemo-db.local:5432/fullstackdemo
