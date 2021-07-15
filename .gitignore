@@ -1,4 +1,5 @@
 .DS_Store
 *.sqlite3
 src/note_frontend/node_modules
-*/__pycache__
+__pycache__/
+*.py[cod]
