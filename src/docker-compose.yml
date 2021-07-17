@@ -17,6 +17,20 @@ services:
           - fullstackdemo-db.local
     container_name: db
 
+  ms_db:
+    image: mcr.microsoft.com/mssql/server
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "FULLSTACKdemo!@!"
+      ACCEPT_EULA: "Y"
+    networks:
+      fullstackdemo:
+        aliases:
+          - ms-db.local
+    container_name:
+      ms_db
+      # Driver={ODBC Driver 17 for SQL Server};Server=ms-db.local;Database=master;Uid=sa;Pwd=FULLSTACKdemo!@!;
   graph_db:
     image: neo4j:4.1.7
     volumes:
@@ -37,7 +51,14 @@ services:
     build:
       context: .
       dockerfile: ./dev/backend/Dockerfile
-    command: ["/wait-for-it/wait-for-it.sh", "fullstackdemo-db.local:5432", "--", "sh", "/home/dev/backend/backend.sh"]
+    command:
+      [
+        "/wait-for-it/wait-for-it.sh",
+        "fullstackdemo-db.local:5432",
+        "--",
+        "sh",
+        "/home/dev/backend/backend.sh",
+      ]
     restart: always
     volumes:
       - ./backend:/code
@@ -61,11 +82,18 @@ services:
     build:
       context: .
       dockerfile: ./dev/backend/Dockerfile
-    command: ["/wait-for-it/wait-for-it.sh", "fullstackdemo-backend.local:8000", "--", "sh", "/home/dev/worker/worker.sh"]
+    command:
+      [
+        "/wait-for-it/wait-for-it.sh",
+        "fullstackdemo-backend.local:8000",
+        "--",
+        "sh",
+        "/home/dev/worker/worker.sh",
+      ]
     restart: always
     volumes:
-        - ./backend:/code
-        - .aws/:/root/.aws/
+      - ./backend:/code
+      - .aws/:/root/.aws/
     environment:
       - POSTGRES_DB=fullstackdemo
       - POSTGRES_ENDPOINT=fullstackdemo-db.local
@@ -85,7 +113,14 @@ services:
     build:
       context: .
       dockerfile: ./dev/frontend/Dockerfile
-    command: ["/wait-for-it/wait-for-it.sh", "fullstackdemo-backend.local:8000", "--", "sh", "/sh/frontend.sh"]
+    command:
+      [
+        "/wait-for-it/wait-for-it.sh",
+        "fullstackdemo-backend.local:8000",
+        "--",
+        "sh",
+        "/sh/frontend.sh",
+      ]
     volumes:
       - ./frontend:/app
     ports:
@@ -107,10 +142,13 @@ services:
       HASURA_GRAPHQL_ADMIN_SECRET: fullstackdemopw
       HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "public"
+      HASURA_GRAPHQL_MSSQL_URL: "Driver={ODBC Driver 17 for SQL Server};Server=ms-db.local;Database=master;Uid=sa;Pwd=FULLSTACKdemo!@!;"
     volumes:
-      - ./hasura/metadata:/hasura-migrations
+      - ./hasura/metadata:/hasura-metadata
+      - ./hasura/migrations:/hasura-migrations
     depends_on:
       - db
+      - ms_db
       - backend
     ports:
       - "8080:8080"

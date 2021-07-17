@@ -4,7 +4,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get  -y install gnupg2 wget git python3-pip
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" |  tee /etc/apt/sources.list.d/pgdg.list
+# RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" |  tee /etc/apt/sources.list.d/pgdg.list
 RUN apt-get update && apt-get install -y postgresql-12 postgresql-client-12
 RUN apt-get install -y postgis postgresql-12-postgis-3 postgresql-12-postgis-3-scripts
 

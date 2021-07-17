@@ -1,0 +1,3 @@
+table:
+  name: spt_monitor
+  schema: dbo

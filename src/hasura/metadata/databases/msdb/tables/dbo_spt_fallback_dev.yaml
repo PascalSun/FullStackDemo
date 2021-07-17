@@ -1,0 +1,3 @@
+table:
+  name: spt_fallback_dev
+  schema: dbo
