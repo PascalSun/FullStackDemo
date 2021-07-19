@@ -28,9 +28,8 @@ services:
       fullstackdemo:
         aliases:
           - ms-db.local
-    container_name:
-      ms_db
-      # Driver={ODBC Driver 17 for SQL Server};Server=ms-db.local;Database=master;Uid=sa;Pwd=FULLSTACKdemo!@!;
+    container_name: ms_db
+
   graph_db:
     image: neo4j:4.1.7
     volumes:
@@ -77,6 +76,10 @@ services:
         aliases:
           - fullstackdemo-backend.local
     container_name: backend
+
+  asp:
+    image: mcr.microsoft.com/dotnet/aspnet:3.1
+
 
   worker:
     build:
