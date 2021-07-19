@@ -125,21 +125,21 @@ services:
           - fullstackdemo-worker.local
     container_name: worker
 
-  frontend:
+  react:
     restart: always
     build:
       context: .
-      dockerfile: ./dev/frontend/Dockerfile
+      dockerfile: ./dev/react/Dockerfile
     command:
       [
         "/wait-for-it/wait-for-it.sh",
         "fullstackdemo-django.local:8000",
         "--",
         "sh",
-        "/sh/frontend.sh",
+        "/sh/react.sh",
       ]
     volumes:
-      - ./frontend:/app
+      - ./react:/app
     ports:
       - "3000:3000"
     depends_on:
@@ -147,8 +147,8 @@ services:
     networks:
       fullstackdemo:
         aliases:
-          - fullstackdemo-frontend.local
-    container_name: frontend
+          - fullstackdemo-react.local
+    container_name: react
 
   graphql_api:
     image: hasura/graphql-engine:v2.0.1.cli-migrations-v3
@@ -186,7 +186,7 @@ services:
     depends_on:
       - django
       - asp
-      - frontend
+      - react
       - graphql_api
     networks:
       fullstackdemo:
