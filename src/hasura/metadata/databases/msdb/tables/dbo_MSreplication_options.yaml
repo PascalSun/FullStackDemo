@@ -1,0 +1,3 @@
+table:
+  name: MSreplication_options
+  schema: dbo

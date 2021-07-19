@@ -17,30 +17,50 @@ services:
           - fullstackdemo-db.local
     container_name: db
 
-  # graph_db:
-  #   image: neo4j:4.1.7
-  #   volumes:
-  #     - fullstack_demo_graph_data:/data
-  #   ports:
-  #     - "7474:7474"
-  #     - "7687:7687"
-  #   environment:
-  #     # user is neo4j
-  #     - NEO4J_AUTH=neo4j/fullstackdemopw
-  #   container_name: graph_db
-  #   networks:
-  #     fullstackdemo:
-  #       aliases:
-  #         - graph-db.local
+  ms_db:
+    image: mcr.microsoft.com/mssql/server
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "FULLSTACKdemo!@!"
+      ACCEPT_EULA: "Y"
+    networks:
+      fullstackdemo:
+        aliases:
+          - ms-db.local
+    container_name: ms_db
 
-  backend:
+  graph_db:
+    image: neo4j:4.1.7
+    volumes:
+      - fullstack_demo_graph_data:/data
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      # user is neo4j
+      - NEO4J_AUTH=neo4j/fullstackdemopw
+    container_name: graph_db
+    networks:
+      fullstackdemo:
+        aliases:
+          - graph-db.local
+
+  django:
     build:
       context: .
-      dockerfile: ./dev/backend/Dockerfile
-    command: ["/wait-for-it/wait-for-it.sh", "fullstackdemo-db.local:5432", "--", "sh", "/home/dev/backend/backend.sh"]
+      dockerfile: ./dev/django/Dockerfile
+    command:
+      [
+        "/wait-for-it/wait-for-it.sh",
+        "fullstackdemo-db.local:5432",
+        "--",
+        "sh",
+        "/home/dev/django/django.sh",
+      ]
     restart: always
     volumes:
-      - ./backend:/code
+      - ./django:/code
       - .aws/:/root/.aws/
     environment:
       - POSTGRES_DB=fullstackdemo
@@ -54,40 +74,72 @@ services:
     networks:
       fullstackdemo:
         aliases:
-          - fullstackdemo-backend.local
-    container_name: backend
+          - fullstackdemo-django.local
+    container_name: django
 
-  # worker:
-  #   build:
-  #     context: .
-  #     dockerfile: ./dev/backend/Dockerfile
-  #   command: ["/wait-for-it/wait-for-it.sh", "fullstackdemo-backend.local:8000", "--", "sh", "/home/dev/worker/worker.sh"]
-  #   restart: always
-  #   volumes:
-  #       - ./backend:/code
-  #       - .aws/:/root/.aws/
-  #   environment:
-  #     - POSTGRES_DB=fullstackdemo
-  #     - POSTGRES_ENDPOINT=fullstackdemo-db.local
-  #     - POSTGRES_USER=admin
-  #     - POSTGRES_PASSWORD=fullstackdemopw
-  #   depends_on:
-  #     - db
-  #     - backend
-  #   networks:
-  #     fullstackdemo:
-  #       aliases:
-  #         - fullstackdemo-worker.local
-  #   container_name: worker
+  asp:
+    container_name: asp
+    build:
+      context: .
+      dockerfile: ./dev/asp/Dockerfile
+    volumes:
+      - ./asp:/app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5000:5000"
+    depends_on:
+      - ms_db
+    networks:
+      fullstackdemo:
+        aliases:
+          - fullstackdemo-asp.local
 
-  frontend:
+  worker:
+    build:
+      context: .
+      dockerfile: ./dev/django/Dockerfile
+    command:
+      [
+        "/wait-for-it/wait-for-it.sh",
+        "fullstackdemo-django.local:8000",
+        "--",
+        "sh",
+        "/home/dev/worker/worker.sh",
+      ]
+    restart: always
+    volumes:
+      - ./django:/code
+      - .aws/:/root/.aws/
+    environment:
+      - POSTGRES_DB=fullstackdemo
+      - POSTGRES_ENDPOINT=fullstackdemo-db.local
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=fullstackdemopw
+    depends_on:
+      - db
+      - django
+    networks:
+      fullstackdemo:
+        aliases:
+          - fullstackdemo-worker.local
+    container_name: worker
+
+  react:
     restart: always
     build:
       context: .
-      dockerfile: ./dev/frontend/Dockerfile
-    command: ["/wait-for-it/wait-for-it.sh", "fullstackdemo-backend.local:8000", "--", "sh", "/sh/frontend.sh"]
+      dockerfile: ./dev/react/Dockerfile
+    command:
+      [
+        "/wait-for-it/wait-for-it.sh",
+        "fullstackdemo-django.local:8000",
+        "--",
+        "sh",
+        "/sh/react.sh",
+      ]
     volumes:
-      - ./note_frontend:/app
+      - ./react:/app
     ports:
       - "3000:3000"
     depends_on:
@@ -95,11 +147,11 @@ services:
     networks:
       fullstackdemo:
         aliases:
-          - fullstackdemo-frontend.local
-    container_name: frontend
+          - fullstackdemo-react.local
+    container_name: react
 
   graphql_api:
-    image: hasura/graphql-engine:v1.3.2.cli-migrations
+    image: hasura/graphql-engine:v2.0.1.cli-migrations-v3
     restart: always
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://admin:fullstackdemopw@fullstackdemo-db.local:5432/fullstackdemo
@@ -107,11 +159,14 @@ services:
       HASURA_GRAPHQL_ADMIN_SECRET: fullstackdemopw
       HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "public"
+      HASURA_GRAPHQL_MSSQL_URL: "Driver={ODBC Driver 17 for SQL Server};Server=ms-db.local;Database=master;Uid=sa;Pwd=FULLSTACKdemo!@!;"
     volumes:
-      - ./hasura/metadata:/hasura-migrations
+      - ./hasura/metadata:/hasura-metadata
+      - ./hasura/migrations:/hasura-migrations
     depends_on:
       - db
-      - backend
+      - ms_db
+      - django
     ports:
       - "8080:8080"
     networks:
@@ -129,9 +184,10 @@ services:
     volumes:
       - ./dev/nginx/:/etc/nginx/conf.d/
     depends_on:
-      - backend
+      - django
+      - asp
+      - react
       - graphql_api
-      - db
     networks:
       fullstackdemo:
         aliases:

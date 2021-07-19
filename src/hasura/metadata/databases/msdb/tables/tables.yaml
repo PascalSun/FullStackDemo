@@ -1,0 +1,6 @@
+- "!include dbo_MSreplication_options.yaml"
+- "!include dbo_spt_fallback_db.yaml"
+- "!include dbo_spt_fallback_dev.yaml"
+- "!include dbo_spt_fallback_usg.yaml"
+- "!include dbo_spt_monitor.yaml"
+- "!include dbo_spt_values.yaml"
