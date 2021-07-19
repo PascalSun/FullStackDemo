@@ -10,6 +10,7 @@ A demo project with the Full Stack setup:
 - Database:
   - PostgreSQL
   - GraphDB: Neo4j
+  - MS SQL Server
 
 All of the stack above are developed with docker.
 
