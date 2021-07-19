@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  db:
+  pg_db:
     image: postgis/postgis
     volumes:
       - fullstack_demo_pg_data:/var/lib/postgresql/data
@@ -14,8 +14,8 @@ services:
     networks:
       fullstackdemo:
         aliases:
-          - fullstackdemo-db.local
-    container_name: db
+          - fullstackdemo-pg-db.local
+    container_name: pg_db
 
   ms_db:
     image: mcr.microsoft.com/mssql/server
@@ -27,7 +27,7 @@ services:
     networks:
       fullstackdemo:
         aliases:
-          - ms-db.local
+          - fullstackdemo-ms-db.local
     container_name: ms_db
 
   graph_db:
@@ -44,7 +44,7 @@ services:
     networks:
       fullstackdemo:
         aliases:
-          - graph-db.local
+          - fullstackdemo-graph-db.local
 
   django:
     build:
@@ -53,7 +53,7 @@ services:
     command:
       [
         "/wait-for-it/wait-for-it.sh",
-        "fullstackdemo-db.local:5432",
+        "fullstackdemo-pg-db.local:5432",
         "--",
         "sh",
         "/home/dev/django/django.sh",
@@ -64,11 +64,11 @@ services:
       - .aws/:/root/.aws/
     environment:
       - POSTGRES_DB=fullstackdemo
-      - POSTGRES_ENDPOINT=fullstackdemo-db.local
+      - POSTGRES_ENDPOINT=fullstackdemo-pg-db.local
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=fullstackdemopw
     depends_on:
-      - db
+      - pg_db
     ports:
       - "8000:8000"
     networks:
@@ -113,11 +113,11 @@ services:
       - .aws/:/root/.aws/
     environment:
       - POSTGRES_DB=fullstackdemo
-      - POSTGRES_ENDPOINT=fullstackdemo-db.local
+      - POSTGRES_ENDPOINT=fullstackdemo-pg-db.local
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=fullstackdemopw
     depends_on:
-      - db
+      - pg_db
       - django
     networks:
       fullstackdemo:
@@ -154,17 +154,17 @@ services:
     image: hasura/graphql-engine:v2.0.1.cli-migrations-v3
     restart: always
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://admin:fullstackdemopw@fullstackdemo-db.local:5432/fullstackdemo
+      HASURA_GRAPHQL_DATABASE_URL: postgres://admin:fullstackdemopw@fullstackdemo-pg-db.local:5432/fullstackdemo
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       HASURA_GRAPHQL_ADMIN_SECRET: fullstackdemopw
       HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "public"
-      HASURA_GRAPHQL_MSSQL_URL: "Driver={ODBC Driver 17 for SQL Server};Server=ms-db.local;Database=master;Uid=sa;Pwd=FULLSTACKdemo!@!;"
+      HASURA_GRAPHQL_MSSQL_URL: "Driver={ODBC Driver 17 for SQL Server};Server=fullstackdemo-ms-db.local;Database=master;Uid=sa;Pwd=FULLSTACKdemo!@!;"
     volumes:
       - ./hasura/metadata:/hasura-metadata
       - ./hasura/migrations:/hasura-migrations
     depends_on:
-      - db
+      - pg_db
       - ms_db
       - django
     ports:

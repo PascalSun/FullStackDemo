@@ -10,7 +10,7 @@ RUN apt-get install -y postgis postgresql-12-postgis-3 postgresql-12-postgis-3-s
 
 RUN git clone https://github.com/vishnubob/wait-for-it.git wait-for-it
 RUN pip3 install django
-ADD dev/db /home/dev/db
+ADD dev/pgsql /home/dev/pgsql
 ADD dev/django /home/dev/django
 ADD dev/worker /home/dev/worker
 RUN mkdir /code

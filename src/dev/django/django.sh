@@ -1,4 +1,4 @@
-PGPASSWORD=$POSTGRES_PASSWORD psql -U $POSTGRES_USER -h $POSTGRES_ENDPOINT -d $POSTGRES_DB < /home/dev/db/add_extension.sql
+PGPASSWORD=$POSTGRES_PASSWORD psql -U $POSTGRES_USER -h $POSTGRES_ENDPOINT -d $POSTGRES_DB < /home/dev/pgsql/add_extension.sql
 python3 manage.py migrate
 
 USER=$POSTGRES_USER
