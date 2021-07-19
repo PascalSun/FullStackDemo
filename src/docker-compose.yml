@@ -46,21 +46,21 @@ services:
         aliases:
           - graph-db.local
 
-  backend:
+  django:
     build:
       context: .
-      dockerfile: ./dev/backend/Dockerfile
+      dockerfile: ./dev/django/Dockerfile
     command:
       [
         "/wait-for-it/wait-for-it.sh",
         "fullstackdemo-db.local:5432",
         "--",
         "sh",
-        "/home/dev/backend/backend.sh",
+        "/home/dev/django/django.sh",
       ]
     restart: always
     volumes:
-      - ./backend:/code
+      - ./django:/code
       - .aws/:/root/.aws/
     environment:
       - POSTGRES_DB=fullstackdemo
@@ -74,8 +74,8 @@ services:
     networks:
       fullstackdemo:
         aliases:
-          - fullstackdemo-backend.local
-    container_name: backend
+          - fullstackdemo-django.local
+    container_name: django
 
   asp:
     container_name: asp
@@ -98,18 +98,18 @@ services:
   worker:
     build:
       context: .
-      dockerfile: ./dev/backend/Dockerfile
+      dockerfile: ./dev/django/Dockerfile
     command:
       [
         "/wait-for-it/wait-for-it.sh",
-        "fullstackdemo-backend.local:8000",
+        "fullstackdemo-django.local:8000",
         "--",
         "sh",
         "/home/dev/worker/worker.sh",
       ]
     restart: always
     volumes:
-      - ./backend:/code
+      - ./django:/code
       - .aws/:/root/.aws/
     environment:
       - POSTGRES_DB=fullstackdemo
@@ -118,7 +118,7 @@ services:
       - POSTGRES_PASSWORD=fullstackdemopw
     depends_on:
       - db
-      - backend
+      - django
     networks:
       fullstackdemo:
         aliases:
@@ -133,7 +133,7 @@ services:
     command:
       [
         "/wait-for-it/wait-for-it.sh",
-        "fullstackdemo-backend.local:8000",
+        "fullstackdemo-django.local:8000",
         "--",
         "sh",
         "/sh/frontend.sh",
@@ -166,7 +166,7 @@ services:
     depends_on:
       - db
       - ms_db
-      - backend
+      - django
     ports:
       - "8080:8080"
     networks:
@@ -184,7 +184,7 @@ services:
     volumes:
       - ./dev/nginx/:/etc/nginx/conf.d/
     depends_on:
-      - backend
+      - django
       - graphql_api
       - db
     networks:
