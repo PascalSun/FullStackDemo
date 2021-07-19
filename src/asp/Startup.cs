@@ -46,6 +46,7 @@ namespace app
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UsePathBase(Configuration.GetValue<string>("Subdirectory"));
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -185,8 +185,9 @@ services:
       - ./dev/nginx/:/etc/nginx/conf.d/
     depends_on:
       - django
+      - asp
+      - frontend
       - graphql_api
-      - db
     networks:
       fullstackdemo:
         aliases:
