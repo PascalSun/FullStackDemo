@@ -4,13 +4,27 @@ A demo project with the Full Stack setup:
 
 - Frontend: React
 - Backend:
-  - GraphQL: Hasura
-  - REST: Django
+  - Hasura for GraphQL
+  - Django
+  - ASP.NET
 - Database:
   - PostgreSQL
   - GraphDB: Neo4j
 
 All of the stack above are developed with docker.
+
+## How to use it
+
+```
+# clone it
+cd ./src
+docker-compose up
+```
+
+- React: http://localhost
+- Django: http://localhost/django/admin/
+- ASP.NET: http://localhost/asp
+- Hasura: http://localhost/gql/
 
 ## GraphQL, Hasura
 
@@ -22,4 +36,4 @@ And to make sure you can use the latest version of the hasura, you may need to u
 
 Then everytime you do some update with the hasura settings, (tables, actions), then
 
-`hasura metadata export  --admin-secret fullstackdemopw`
+`hasura metadata export --admin-secret fullstackdemopw`
