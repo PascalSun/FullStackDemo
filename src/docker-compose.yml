@@ -78,8 +78,22 @@ services:
     container_name: backend
 
   asp:
-    image: mcr.microsoft.com/dotnet/aspnet:3.1
-
+    container_name: asp
+    build:
+      context: .
+      dockerfile: ./dev/asp/Dockerfile
+    volumes:
+      - ./asp:/app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5000:5000"
+    depends_on:
+      - ms_db
+    networks:
+      fullstackdemo:
+        aliases:
+          - fullstackdemo-asp.local
 
   worker:
     build:
