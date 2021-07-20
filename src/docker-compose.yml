@@ -95,6 +95,20 @@ services:
         aliases:
           - fullstackdemo-asp.local
 
+  express:
+    container_name: express
+    build:
+      context: .
+      dockerfile: ./dev/express/Dockerfile
+    volumes:
+      - ./express:/app
+    ports:
+      - "3001:3000"
+    networks:
+      fullstackdemo:
+        aliases:
+          - fullstackdemo-express.local
+
   worker:
     build:
       context: .
