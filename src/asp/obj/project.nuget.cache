@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "xvJXHCbks36SCRAXQ0ghdTjR/PjNCJcmcOlIQuLfqHZIQVgnR/ZmFw5S1gvuecU/z6WwIQE+rWc0qY6S4J8jNQ==",
+  "dgSpecHash": "SObqTefJZgX9ETRAE6i9GUL8ATs4B/ngH701ul9AUuXhw99ggJr0zdKXYOq7rQ3EYgHLAkTuGPrHQsEhFCGXZw==",
   "success": true,
-  "projectFilePath": "/home/pascal/PerthFSD/FullStackDemo/src/asp/FullStackDemo.csproj",
+  "projectFilePath": "/app/FullStackDemo.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

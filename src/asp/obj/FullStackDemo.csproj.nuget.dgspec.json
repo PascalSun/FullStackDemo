@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/pascal/PerthFSD/FullStackDemo/src/asp/FullStackDemo.csproj": {}
+    "/app/FullStackDemo.csproj": {}
   },
   "projects": {
-    "/home/pascal/PerthFSD/FullStackDemo/src/asp/FullStackDemo.csproj": {
+    "/app/FullStackDemo.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/pascal/PerthFSD/FullStackDemo/src/asp/FullStackDemo.csproj",
+        "projectUniqueName": "/app/FullStackDemo.csproj",
         "projectName": "FullStackDemo",
-        "projectPath": "/home/pascal/PerthFSD/FullStackDemo/src/asp/FullStackDemo.csproj",
-        "packagesPath": "/home/pascal/.nuget/packages/",
-        "outputPath": "/home/pascal/PerthFSD/FullStackDemo/src/asp/obj/",
+        "projectPath": "/app/FullStackDemo.csproj",
+        "packagesPath": "/root/.nuget/packages/",
+        "outputPath": "/app/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/pascal/.nuget/NuGet/NuGet.Config"
+          "/root/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -55,7 +55,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/pascal/.dotnet/sdk/6.0.101/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.101/RuntimeIdentifierGraph.json"
         }
       }
     }
