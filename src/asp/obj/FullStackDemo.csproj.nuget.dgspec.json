@@ -1,0 +1,63 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/pascal/PerthFSD/FullStackDemo/src/asp/FullStackDemo.csproj": {}
+  },
+  "projects": {
+    "/home/pascal/PerthFSD/FullStackDemo/src/asp/FullStackDemo.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/pascal/PerthFSD/FullStackDemo/src/asp/FullStackDemo.csproj",
+        "projectName": "FullStackDemo",
+        "projectPath": "/home/pascal/PerthFSD/FullStackDemo/src/asp/FullStackDemo.csproj",
+        "packagesPath": "/home/pascal/.nuget/packages/",
+        "outputPath": "/home/pascal/PerthFSD/FullStackDemo/src/asp/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/pascal/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/home/pascal/.dotnet/sdk/6.0.101/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
