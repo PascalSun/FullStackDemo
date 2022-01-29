@@ -1,8 +1,5 @@
-# syntax=docker/dockerfile:1
-FROM microsoft/dotnet:2.1-sdk
-COPY ./asp /app
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine
 WORKDIR /app
-RUN ["dotnet", "restore"]
-RUN ["dotnet", "build"]
-COPY ./dev/asp/entrypoint.sh /home/entrypoint.sh
-CMD /bin/bash /home/entrypoint.sh
+COPY ./asp .
+EXPOSE 5001
+ENTRYPOINT [ "dotnet", "watch", "run" ]

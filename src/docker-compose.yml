@@ -87,7 +87,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "5000:5000"
+      - "5001:5001"
     depends_on:
       - ms_db
     networks:
