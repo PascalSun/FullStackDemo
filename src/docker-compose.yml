@@ -56,7 +56,7 @@ services:
         "fullstackdemo-pg-db.local:5432",
         "--",
         "sh",
-        "/home/dev/django/django.sh",
+        "/home/dev/django/django.sh"
       ]
     restart: always
     volumes:
@@ -95,6 +95,25 @@ services:
         aliases:
           - fullstackdemo-asp.local
 
+  express:
+    container_name: express
+    build:
+      context: .
+      dockerfile: ./dev/express/Dockerfile
+    command:
+      [
+        "sh",
+        "/sh/start.sh"
+      ]
+    volumes:
+      - ./express:/app
+    ports:
+      - "3001:3000"
+    networks:
+      fullstackdemo:
+        aliases:
+          - fullstackdemo-express.local
+
   worker:
     build:
       context: .
@@ -105,7 +124,7 @@ services:
         "fullstackdemo-django.local:8000",
         "--",
         "sh",
-        "/home/dev/worker/worker.sh",
+        "/home/dev/worker/worker.sh"
       ]
     restart: always
     volumes:
@@ -136,7 +155,7 @@ services:
         "fullstackdemo-django.local:8000",
         "--",
         "sh",
-        "/sh/react.sh",
+        "/sh/react.sh"
       ]
     volumes:
       - ./react:/app
@@ -178,7 +197,7 @@ services:
   nginx:
     restart: always
     image: nginx
-    command: ["bash", "-c", "sleep 15 && nginx -g 'daemon off;'"]
+    command: [ "bash", "-c", "sleep 15 && nginx -g 'daemon off;'" ]
     ports:
       - "80:80"
     volumes:
