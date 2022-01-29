@@ -1,6 +1,5 @@
-FROM node:14
+FROM node:16
 WORKDIR /app
-COPY ../express /app/
+COPY ./express /app/
+ADD dev/express /sh
 RUN yarn
-RUN yarn global add nodemon --prefix /usr/local
-CMD ["nodemon", "--exec", "yarn", "start"]
