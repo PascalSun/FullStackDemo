@@ -83,7 +83,7 @@ services:
       context: .
       dockerfile: ./dev/asp/Dockerfile
     volumes:
-      - ./asp:/app
+      - ./asp/FullStackDemo:/app
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
