@@ -10,6 +10,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
+app.UsePathBase("/asp");
 app.UseStaticFiles();
 
 app.UseRouting();
